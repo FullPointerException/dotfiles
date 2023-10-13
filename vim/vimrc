@@ -1,0 +1,17 @@
+set nocompatible " make vim more useful
+set backspace=indent,eol,start " make backspace work the way I want
+
+set title " set window title to filename
+set showmode " shows whether in insert/replace/visual mode
+set showcmd " show (partial) command at bottom of stream
+set showmatch " shows matching brackets
+set nowrap " turns off line wrapping
+
+set tabstop=4 " visual spaces per tab
+set softtabstop=4 " spaces per tab when editing
+set shiftwidth=4 " number of spaces for each step of autoindent
+set expandtab " use spaces for tabs
+
+set number " show line numbers
+set cursorline " highlight current line
+set hlsearch " highlight searches

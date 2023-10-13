@@ -1,0 +1,634 @@
+#+TITLE:  Emacs configuration
+#+AUTHOR:  FullPointerException
+#+PROPERTY: header-args:emacs-lisp :tangle ~/.emacs.d/init.el
+
+* Emacs literate configuration
+
+** Startup
+Reduce garbage collection frequency by increasing threshold
+
+#+begin_src emacs-lisp
+
+;; Change from 800kB to 50 Mb
+(setq gc-cons-threshold (* 50 1000 1000))
+
+#+end_src
+
+Measure the time it takes to start emacs
+
+#+begin_src emacs-lisp
+
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (message "*** Loaded in %s."
+                     (format "%.2f seconds"
+                             (float-time
+                            (time-subtract after-init-time before-init-time))))))
+
+#+end_src
+
+Not sure of a better place to put this, but make ESC always cancel
+#+begin_src emacs-lisp
+
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+
+#+end_src
+
+** Appearance
+
+Set frame transparency
+
+#+begin_src emacs-lisp
+
+(set-frame-parameter (selected-frame) 'alpha '(95 . 90))
+
+(add-to-list 'default-frame-alist '(alpha . (95 . 90)))
+
+#+end_src
+
+Remove dialogs and prompts
+
+#+begin_src emacs-lisp
+
+(setq inhibit-startup-screen t
+      inhibit-startup-message t
+      inhibit-splash-screen t
+      inhibit-startup-echo-area-message t
+      initial-scratch-message ""
+      intial-buffer-choice t
+      large-file-warning-threshold nil ; Don't warn on opening large files
+      vc-follow-symlinks t) ; Don't warn for opening sym-link'ed files
+
+#+end_src
+
+Remove decorations
+
+#+begin_src emacs-lisp
+
+(scroll-bar-mode -1) ; No scroll bars
+
+(tool-bar-mode -1) ; No toolbar
+
+(tooltip-mode -1) ; No tooltips
+
+(menu-bar-mode -1) ; No menu bar
+
+(set-fringe-mode 10) ; set left and right fringe widths
+
+#+end_src
+
+Stop the bell
+
+#+begin_src emacs-lisp
+
+;; Disable audio bell
+(setq ring-bell-function 'ignore)
+
+;; Disable visible bell
+(setq visible-bell nil)
+
+#+end_src
+
+Configure tabs
+
+#+begin_src emacs-lisp
+
+;; Default tab sizes
+(setq-default tab-width 4)
+
+#+end_src
+
+Maximize by default
+
+#+begin_src emacs-lisp
+
+(set-frame-parameter (selected-frame) 'fullscreen 'maximized)
+
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+
+#+end_src
+
+Set font faces
+
+#+BEGIN_SRC emacs-lisp
+
+(set-face-attribute 'default nil
+                    :font "Fira Code Retina"
+                    :height 80)
+
+(set-face-attribute 'fixed-pitch nil
+                    :font "Fira Code Retina"
+                    :height 80
+                    :weight 'light)
+
+(set-face-attribute 'variable-pitch nil
+                    :font "Cantarell"
+                    :height 80
+                    :weight 'light)
+
+#+END_SRC
+
+Setup line numbers
+
+#+BEGIN_SRC emacs-lisp
+
+(column-number-mode) ; Enable column numbers in mode bar
+
+;; Enable line numbers for some modes
+(dolist (mode '(text-mode-hook
+                prog-mode-hook
+                conf-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 1))))
+
+;; Override to turn line numbers back off in org mode
+(dolist (mode '(org-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 0))))
+
+#+END_SRC
+
+Make the mouse scrolling nicer
+
+#+BEGIN_SRC emacs-lisp
+
+(setq mouse-wheel-scroll-amount
+      '(1 ((shift) . 1)
+          ((control) . nil))) ; scroll 1 line at a time
+
+(setq mouse-wheel-progressive-speed nil ; no acceleration
+      mouse-wheel-follow-mouse 't ; scroll window under mouse
+      scroll-step 1) ; keyboard scroll one line at a time
+
+#+END_SRC
+
+Set the title bar text
+
+#+BEGIN_SRC emacs-lisp
+
+(setq-default frame-title-format '("emacs - %b"))
+
+#+END_SRC
+
+** Navigation
+
+Replace the default C-a (which jumps to beginning of a line) with toggling beginning of line and beginning of indent
+From https://stackoverflow.com/questions/6035872/moving-to-the-start-of-a-code-line-emacs
+Some modes (such as org mode) can override this. If needed, look into eval-after-load
+
+#+BEGIN_SRC emacs-lisp
+
+(defun fullpointer/toggle-line-beginning ()
+  (interactive)
+  (let ((pt (point)))
+    (beginning-of-line-text)
+    (when (eq pt (point))
+      (beginning-of-line))))
+
+(global-set-key (kbd "C-a") 'fullpointer/toggle-line-beginning)
+
+#+END_SRC
+
+** Files
+
+Move the backups for all files to =user-emacs-directory/.backup=
+The files can be set to backup differently based on a regex, but for now put them all in one place
+
+#+BEGIN_SRC emacs-lisp
+
+;; Define the backup dir
+(defvar fullpointer-backup-dir (expand-file-name ".backup" user-emacs-directory))
+
+;; Make sure it exists
+(if (not (file-exists-p fullpointer-backup-dir))
+	(make-directory fullpointer-backup-dir t))
+
+(setq  backup-by-copying t ;; Don't clobber symlinks
+	   backup-directory-alist `((".*" . ,fullpointer-backup-dir)) ;; Backup all files in the backup dir
+       auto-save-file-name-transforms `((".*" ,fullpointer-backup-dir t))
+	   delete-old-versions t ;; Silently delete excess backups
+	   kept-new-versions 5 ;; Newest number to keep
+	   kept-old-versions 2 ;; Oldest number to keep
+	   make-backup-files t ;; Create backups when first saving files
+	   version-control t) ;; Version number the backups
+
+#+END_SRC
+
+Setup autosaving
+
+#+BEGIN_SRC emacs-lisp
+
+(setq auto-save-default t ;; Autosave visited files
+	  auto-save-interval 1000 ;; Autosave after this many keystrokes
+	  auto-save-timeout (* 60 5)) ;; Seconds to wait before autosave
+
+#+END_SRC
+
+Use the system's trash can when deleting files and directories
+
+#+BEGIN_SRC emacs-lisp
+
+(setq delete-by-moving-to-trash t)
+
+#+END_SRC
+
+Disable the creation of lockfiles
+
+#+BEGIN_SRC emacs-lisp
+
+(setq-default create-lockfiles nil)
+
+#+END_SRC
+
+Setup indentation
+
+#+BEGIN_SRC emacs-lisp
+
+(setq-default indent-tabs-mode nil
+			  indent-line-function 'insert-tab
+			  tab-width 4
+			  c-basic-offset 4
+			  js-switch-indent-offest 4)
+
+
+#+END_SRC
+
+** Packages setup
+
+Setup various package repositories.
+
+#+begin_src emacs-lisp
+
+;; Setup the package sources
+(require 'package)
+
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                         ("melpa-stable" . "https://stable.melpa.org/packages/")
+                         ("org" . "https://orgmode.org/elpa/")
+                         ("elpa" . "https://elpa.gnu.org/packages/")))
+
+(package-initialize)
+
+;; If the archive is empty, refresh its contents
+(unless package-archive-contents
+  (package-refresh-contents))
+
+#+end_src
+
+Load use-package, and use that for all the other package management.
+
+#+begin_src emacs-lisp
+
+;; Get use-package
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+
+(require 'use-package)
+
+(setq use-package-always-ensure t)
+
+#+end_src
+
+
+*** Theme
+Load the doom-themes and select the desired theme
+
+#+BEGIN_SRC emacs-lisp
+
+(use-package doom-themes :defer t)
+
+(load-theme 'doom-acario-dark t)
+
+#+END_SRC
+
+
+*** Diminish
+
+Diminish allows hiding minor modes from the mode line
+
+#+BEGIN_SRC emacs-lisp
+
+(use-package diminish)
+
+#+END_SRC
+
+*** Ivy
+
+Use ivy as the completion engine
+
+#+BEGIN_SRC emacs-lisp
+
+(use-package ivy
+  :diminish
+  :config
+  (ivy-mode 1))
+
+#+END_SRC
+
+*** Projectile
+
+Project interaction library, allows treating files in a git repo as a project
+
+#+BEGIN_SRC emacs-lisp
+
+(use-package projectile
+  :bind-keymap
+  ("C-c p" . projectile-command-map) ; set C-c p as projectile leader
+  :custom
+  (projectile-completion-system 'ivy)
+  :demand t
+  :config
+  (projectile-mode 1))
+
+#+END_SRC
+
+*** Ripgrep
+
+Reipgrep in emacs
+
+#+BEGIN_SRC emacs-lisp
+
+(use-package rg)
+
+#+END_SRC
+
+*** Color ripgrep
+
+A colorized ripgrep tool for searching
+
+Requires rg is in the path
+Requires cloning the [[https://github.com/manateelazycat/color-rg][color-rg repo]] into =~/.emacs.d/site-elisp=
+
+Currently requires a newer emacs than I am using
+
+
+#+BEGIN_SRC
+
+(use-package color-rg
+  :load-path (lambda () (expand-file-name "site-elisp/color-rg" user-emacs-directory)))
+
+#+END_SRC
+
+*** YASnippet
+
+Snippets engine
+
+#+BEGIN_SRC emacs-lisp
+
+(use-package yasnippet
+  :diminish yas-minor-mode
+  :hook ((prog-mode org-mode) . yas-minor-mode)
+  :config 
+  (setq yas-snippet-dirs (append '("/home/josh/.emacs.d/work/snippets")
+                                 yas-snippet-dirs))
+  (yas-reload-all))
+
+#+END_SRC
+
+
+*** Rainbow delimiters
+Assign ranbow delimeters to all programming modes
+
+#+begin_src emacs-lisp
+
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
+
+#+end_src
+
+*** Command log mode
+Toggle on a buffer showing all commands executed
+
+#+begin_src emacs-lisp
+
+(use-package command-log-mode)
+
+#+end_src
+
+*** Which Key
+Which-key will show which keybindings are available based on the current prefix
+
+#+BEGIN_SRC emacs-lisp
+
+(use-package which-key
+  :init (which-key-mode)
+  :diminish which-key-mode
+  :config (setq which-key-idle-delay 0.7))
+
+#+END_SRC
+
+*** Editor Config
+Apply .editorconfig files when in a programming mode
+
+#+BEGIN_SRC emacs-lisp
+
+(use-package editorconfig
+  :ensure t
+  :diminish
+  :config
+  (editorconfig-mode 1))
+
+(add-hook 'prog-mode-hook #'editorconfig-mode-apply)
+
+#+END_SRC
+
+*** Org Mode
+
+#+begin_src emacs-lisp
+
+(defun fullpointer/org-mode-setup ()
+  (org-indent-mode) ; Enable org-indent-mode by default
+  (diminish org-indent-mode) ; Do not show org-indent-mode minor mode in modeline
+  (visual-line-mode 1) ; Wrap lines after a certain width
+  (auto-fill-mode 0)) ; Disable automatically inserting new lines while typing
+
+(use-package org
+  :defer t
+  :hook (org-mode . fullpointer/org-mode-setup)
+  :bind (:map org-mode-map
+			  ("<f5>" . org-redisplay-inline-images)
+			  ("C-<f5>" . org-latex-preview))
+  :config
+  (add-to-list 'org-src-lang-modes '("dot" . "graphviz-dot"))
+  (setq
+   org-adapt-indentation nil ; Set indentation based on sub-heading level in outline
+   org-confirm-babel-evaluate nil ; Do not require a confirmation when executing code blocks in an org buffer
+   org-edit-src-content-indentation 0 ; Contents of src block have no extra indentation
+   org-ellipsis " ▼" ; Set the expand for more glyph
+   org-fontify-quote-and-verse-blocks t ; Give special fact to begin_quote and begin_verse blocks
+   org-fontify-whole-heading-line t ; Fontifies the whole heading line
+   org-hide-emphasis-markers t ; Hide markers for bold, italics, etc.
+   org-image-actual-width nil ; Allow inline images to be resized
+   org-latex-create-formula-image-program 'dvisvgm ; Use dvisvgm instead of the default dvipng for better inline images
+   org-src-preserve-indentation nil ; Remove the leading whitespace for the block when tangling
+   org-return-follows-link nil ; Do not follow a link when pressing return,
+   org-src-fontify-natively t ; Fontify code in code blocks
+   org-src-tab-acts-natively t ; Make TAB indent code in src blocks like their language
+   org-startup-folded 'nofold) ; Default to content visible on startup
+  (plist-put org-format-latex-options :scale 1.5) ;; Bigger inline latex
+  (org-babel-do-load-languages ;; Load the languages in org mode
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (python . t)
+     (shell . t)
+	   (dot . t)
+	   (css . t)
+	   (js . t)
+	   (latex . t)
+	   (plantuml . t))))
+
+#+end_src
+
+Pretty-ify the headings font
+
+#+BEGIN_SRC emacs-lisp
+
+(with-eval-after-load 'org-faces
+  (dolist
+	  (face '((org-level-1 . 1.75)
+			  (org-level-2 . 1.50)
+			  (org-level-3 . 1.25)
+			  (org-level-4 . 1.10)
+			  (org-level-5 . 1.05)
+			  (org-level-6 . 1.00)
+			  (org-level-7 . 1.00)
+			  (org-level-8 . 1.0)
+			  (org-document-title . 2.0)))
+    (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face))))
+
+#+END_SRC
+
+Pretty-ify the headings asterisks with org bullets package
+
+#+BEGIN_SRC emacs-lisp
+
+(use-package org-bullets
+  :after org
+  :hook (org-mode . org-bullets-mode)
+  :custom (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○")))
+
+#+END_SRC
+
+Replace the hyphen for lists with a dot
+
+#+BEGIN_SRC emacs-lisp
+
+(font-lock-add-keywords 'org-mode
+                        '(("^ *\\([-]\\) "
+                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+
+#+END_SRC
+
+Set the org fonts
+
+#+BEGIN_SRC emacs-lisp
+
+(with-eval-after-load 'org-faces
+  (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+  (set-face-attribute 'org-code nil :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-table nil :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-formula nil :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-link nil :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
+
+#+END_SRC
+
+Setup the org mode TODO states
+
+#+BEGIN_SRC emacs-lisp
+
+(setq org-todo-keywords
+      '((sequence "TODO" "IN PROGRESS" "BLOCKED" "|" "DONE" "CANCELLED"))
+      org-todo-keyword-faces
+      '(("BLOCKED" . "red") ("IN PROGRESS" . "orange")))
+
+
+#+END_SRC
+
+Use visueal fill column to pad space on either side in org mode
+
+#+BEGIN_SRC emacs-lisp
+
+(defun fullpointer/org-mode-visual-fill ()
+    (setq visual-fill-column-width 200
+          visual-fill-column-center-text t)
+    (visual-fill-column-mode 1))
+
+(use-package visual-fill-column
+  :defer t
+  :hook (org-mode . fullpointer/org-mode-visual-fill))
+
+#+END_SRC
+
+*** Plant UML mode
+
+Requirement: install plantuml to =~/.local/bin/plantuml.jar=
+
+#+BEGIN_SRC emacs-lisp
+
+(use-package plantuml-mode
+  :defer t
+  :custom
+  (org-plantuml-jar-path (expand-file-name "~/.local/bin/plantuml.jar")))
+
+#+END_SRC
+
+** Programming languages
+*** C / C++
+
+Swap header / source
+TODO: Currently this is getting overwritten, but just use C-c p a
+
+#+BEGIN_SRC elisp
+
+(add-hook 'c-mode-common-hook
+          (lambda()
+            (local-set-key (kbd "C-c o") 'ff-find-other-file)))
+
+#+END_SRC
+
+Setup c-style offsets. Pressing C-c C-s on a line will denote what category it is.
+TODO: Put this into a c-set-offset hook
+
+#+BEGIN_SRC emacs-lisp
+
+(c-set-offset 'comment-intro 0)
+
+(c-set-offset 'innamespace 0)
+
+(c-set-offset 'case-label '+)
+
+(c-set-offset 'access-label 0)
+
+(c-set-offset 'cpp-macro 0 nil)
+
+(c-set-offset 'substatement-open 0)
+
+(c-set-offset 'brace-list-intro '+)
+
+(c-set-offset 'arglist-intro '+)
+
+#+END_SRC
+
+*** C++
+
+Update highlighting for modern c++
+
+#+BEGIN_SRC emacs-lisp
+
+(use-package modern-cpp-font-lock
+  :diminish t
+  :init (modern-c++-font-lock-global-mode t))
+
+#+END_SRC
+
+* TO-DO
+Modus-themes package (requires emacs 27.1+)
+
+* Sources
+github MatthewZMD
+- [[https://config.daviwil.com/emacs][David Wilson]]
+- [[https://github.com/MatthewZMD/.emacs.d][MatthewZMD M-EMACS]]
+-
+
