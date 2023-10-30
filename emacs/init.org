@@ -623,6 +623,16 @@ Update highlighting for modern c++
 
 #+END_SRC
 
+*** Go lang
+
+#+begin_src emacs-lisp
+
+(use-package go-mode
+  :defer t)
+
+#+end_src
+
+
 * TO-DO
 Modus-themes package (requires emacs 27.1+)
 
