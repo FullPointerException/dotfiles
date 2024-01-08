@@ -34,6 +34,14 @@ Not sure of a better place to put this, but make ESC always cancel
 
 #+end_src
 
+#+begin_src emacs-lisp
+
+;; Right now my left alt key is janky, so do a remap
+(global-set-key (kbd "C-<tab>") 'dabbrev-expand)
+
+#+end_src
+
+
 ** Appearance
 
 Set frame transparency
@@ -248,6 +256,8 @@ Setup indentation
 			  c-basic-offset 4
 			  js-switch-indent-offest 4)
 
+;; Consider this instead
+;; (setq-default c-basic-offset tab-width)
 
 #+END_SRC
 
@@ -622,6 +632,13 @@ Update highlighting for modern c++
   :init (modern-c++-font-lock-global-mode t))
 
 #+END_SRC
+
+*** QML
+#+begin_src emacs-lisp
+
+(use-package qml-mode)
+
+#+end_src
 
 *** Go lang
 
