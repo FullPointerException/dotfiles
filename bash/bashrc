@@ -120,6 +120,7 @@ fi
 # Add to path
 export PATH="$PATH:$HOME/.local/bin"
 export PATH="$PATH:$HOME/.local/bin/work"
+export PATH="$PATH:/usr/local/go/bin"
 
 # If there is a private rc file on this device, source it here
 if [ -e $HOME/.private_bashrc ]
@@ -131,6 +132,10 @@ fi
 export ANDROID_HOME="$HOME/android"
 export ANDROID_SDK_ROOT=$ANDROID_HOME
 export PATH="$PATH:$ANDROID_HOME/cmdline-tools/tools/bin"
+
+# Add golang support
+export GOPATH="$HOME/go"
+export PATH="$PATH:$GOPATH/bin"
 
 source /home/josh/repos/site/alacritty/extra/completions/alacritty.bash
 

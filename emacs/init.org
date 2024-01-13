@@ -584,6 +584,24 @@ Requirement: install plantuml to =~/.local/bin/plantuml.jar=
 
 #+END_SRC
 
+*** LSP
+
+Setup lsp so that all the programming languages can have an lsp option for completion, etc.
+
+#+begin_src emacs-lisp
+
+(use-package eglot
+  :ensure t
+  :defer t
+  :after (company yasnippet))
+
+(setq-default eglot-workspace-configuration
+              '((:gopls .
+                        ((staticcheck . t)
+                         (matcher . "CaseSensitive")))))
+#+end_src
+
+
 ** Programming languages
 *** C / C++
 
@@ -646,6 +664,32 @@ Update highlighting for modern c++
 
 (use-package go-mode
   :defer t)
+
+;; From golang tools, function to find root go modul 
+(defun project-find-go-module (dir)
+  (when-let ((root (locate-dominating-file dir "go.mod")))
+    (cons 'go-module root)))
+(cl-defmethod project-root ((project (head go-module)))
+  (cdr project))
+
+(add-hook 'project-find-functions #'project-find-go-module)
+
+#+end_src
+
+LSP settings:
+
+Requires installing gopls (go get golang.org/x/tools/gopls@latest)
+#+begin_src emacs-lisp
+
+(add-hook 'go-mode-hook 'eglot-ensure)
+
+;; From golang emacs tools docs
+;; Set eglot-format-buffer as a save hook
+;; The depth of -10 places this before eglot's willSave notification
+;; so that the notification reports the actual contents that wil be saved
+;;(defun eglot-format-buffer-on-save ()
+;;  (add-hook 'before-save-hook #'eglot-format-buffer -10 t))
+;;(add-hook 'go-mode-hook #'eglot-format-buffer-on-save)
 
 #+end_src
 
