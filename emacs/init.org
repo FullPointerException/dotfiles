@@ -320,16 +320,72 @@ Diminish allows hiding minor modes from the mode line
 
 #+END_SRC
 
-*** Ivy
+*** Completions
+
+**** Ivy 
 
 Use ivy as the completion engine
-
-#+BEGIN_SRC emacs-lisp
+Currently disabling ivy in favor of [[Vertico]]
+#+BEGIN_SRC disabled
 
 (use-package ivy
   :diminish
   :config
   (ivy-mode 1))
+
+#+END_SRC
+
+**** Vertico
+
+Source: [[https://github.com/minad/vertico]]
+
+Replaces default emacs single line completion with a vertical buffer. More configurable and all done using native emacs function calls (as opposed to Ivy, which used custom calls instead)
+
+#+BEGIN_SRC emacs-lisp
+
+(use-package vertico
+  :ensure t
+  :init
+  (vertico-mode)
+)
+
+#+END_SRC
+
+**** Orderless
+
+Source: [[https://github.com/oantolin/orderless]]
+
+Creates a new emacs completion style that lets all patterns get matched in any order.
+
+#+BEGIN_SRC emacs-lisp
+
+(use-package orderless
+  :ensure t
+  :config 
+  (setq completion-styles '(orderless)
+        completion-category-defaults nil
+        completeion-categoriy-overrides '((file (styles . (partial-completion))))))
+
+#+END_SRC
+
+**** Consult
+
+**** Marginalia
+
+Source: [[https://github.com/minad/marginalia]]
+
+Adds marginalia info into the completion minibuffer (keybindings, descriptions, etc.)
+
+#+BEGIN_SRC emacs-lisp
+
+(use-package marginalia
+  :ensure t
+  :config
+  (setq marginalia-annotators '(marginalia-annotators-heavy
+                                marginalia-annotators-light
+                                nil))
+  :init
+  (marginalia-mode))
 
 #+END_SRC
 
@@ -342,8 +398,6 @@ Project interaction library, allows treating files in a git repo as a project
 (use-package projectile
   :bind-keymap
   ("C-c p" . projectile-command-map) ; set C-c p as projectile leader
-  :custom
-  (projectile-completion-system 'ivy)
   :demand t
   :config
   (projectile-mode 1))
@@ -357,6 +411,8 @@ Reipgrep in emacs
 #+BEGIN_SRC emacs-lisp
 
 (use-package rg)
+
+(setq rg-ignore-ripgreprc nil)
 
 #+END_SRC
 
@@ -693,9 +749,6 @@ Requires installing gopls (go get golang.org/x/tools/gopls@latest)
 
 #+end_src
 
-
-* TO-DO
-Modus-themes package (requires emacs 27.1+)
 
 * Sources
 github MatthewZMD
