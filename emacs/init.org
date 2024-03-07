@@ -785,7 +785,7 @@ See instructions at [[https://github.com/golang/tools/blob/master/gopls/doc/emac
 ;; ;; Make sure you don't have other gofmt/goimport hooks inabled.
 (defun lsp-go-install-save-hooks ()
   (add-hook 'before-save-hook #'lsp-format-buffer t t)
-  (add-hook 'before-save-hook #'lsp-organize-imorts t t))
+  (add-hook 'before-save-hook #'lsp-organize-imports t t))
 (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
 
 #+end_src
