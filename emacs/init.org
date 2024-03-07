@@ -688,6 +688,21 @@ Language server support for emacs
 
 #+END_SRC
 
+**** Company mode
+
+#+BEGIN_SRC emacs-lisp
+
+(use-package company
+  :ensure t
+  :hook ((emacs-lisp-mode . (lambda ()
+                              (setq-local company-backends '(company-elisp))))
+         (emacs-lisp-mode . company-mode))
+  :config
+  (setq company-idle-delay 1.0
+        company-minimum-prefix-length 3))
+
+#+END_SRC
+
 *** YAML
 
 #+BEGIN_SRC emacs-lisp
@@ -771,7 +786,7 @@ Update highlighting for modern c++
 
 #+end_src
 
-LSP settings:
+**** LSP settings
 
 Requires installing gopls (go install golang.org/x/tools/gopls@latest)
 
@@ -779,6 +794,7 @@ See instructions at [[https://github.com/golang/tools/blob/master/gopls/doc/emac
 
 #+begin_src emacs-lisp
 
+;; Could put in part of the go-mode use-package, I kind of like having the lsp part separate
 (add-hook 'go-mode-hook #'lsp-deferred)
 
 ;; Set up before-save hooks to format buffer and add/delete imports.
