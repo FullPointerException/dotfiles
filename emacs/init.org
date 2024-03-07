@@ -671,7 +671,7 @@ Requirement: install plantuml to =~/.local/bin/plantuml.jar=
 
 Setup lsp so that all the programming languages can have an lsp option for completion, etc.
 
-**** Eglot (disabled, see lsp-mode)
+**** Eglot (disabled, see [[lsp-mode]])
 #+begin_src disabled
 
 (use-package eglot
@@ -687,19 +687,20 @@ Setup lsp so that all the programming languages can have an lsp option for compl
 
 **** LSP mode
 
+Source: [[https://github.com/emacs-lsp/lsp-mode]]
+
+Language server support for emacs
+
 #+BEGIN_SRC emacs-lisp
 
 (use-package lsp-mode
-  :ensure t
+  :commands (lsp lsp-deferred)
+  :init
+  (setq lsp-keymap-prefix "C-c l")
   :config
   (lsp-enable-which-key-integration t))
 
 #+END_SRC
-
-:bind (:map lsp-mode-map
-           ("C-c l" . lsp-command-map)
-           ("C-c d" . lsp-describe-thing-at-point
-           ("C-c a" . lsp-execute-code-action))
 
 *** YAML
 
@@ -787,17 +788,19 @@ Update highlighting for modern c++
 LSP settings:
 
 Requires installing gopls (go get golang.org/x/tools/gopls@latest)
-#+begin_src disabled
 
-(add-hook 'go-mode-hook 'eglot-ensure)
+See instructions at [[https://github.com/golang/tools/blob/master/gopls/doc/emacs.md]]
 
-;; From golang emacs tools docs
-;; Set eglot-format-buffer as a save hook
-;; The depth of -10 places this before eglot's willSave notification
-;; so that the notification reports the actual contents that wil be saved
-;;(defun eglot-format-buffer-on-save ()
-;;  (add-hook 'before-save-hook #'eglot-format-buffer -10 t))
-;;(add-hook 'go-mode-hook #'eglot-format-buffer-on-save)
+#+begin_src emacs-lisp
+
+(add-hook 'go-mode-hook #'lsp-deferred)
+
+;; Set up before-save hooks to format buffer and add/delete imports.
+;; ;; Make sure you don't have other gofmt/goimport hooks inabled.
+(defun lsp-go-install-save-hooks ()
+  (add-hook 'before-save-hook #'lsp-format-buffer t t)
+  (add-hook 'before-save-hook #'lsp-organize-imorts t t))
+(add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
 
 #+end_src
 
