@@ -475,6 +475,18 @@ Assign ranbow delimeters to all programming modes
 
 #+end_src
 
+*** Rainbow mode
+Makes hexcodes for colors get the color they are the code for
+
+#+BEGIN_SRC emacs-lisp
+
+(use-package rainbow-mode
+  :defer t
+  :diminish
+  :hook (qml-mode))
+
+#+END_SRC
+
 *** Command log mode
 Toggle on a buffer showing all commands executed
 
