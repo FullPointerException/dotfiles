@@ -659,7 +659,8 @@ Requirement: install plantuml to =~/.local/bin/plantuml.jar=
 
 Setup lsp so that all the programming languages can have an lsp option for completion, etc.
 
-#+begin_src emacs-lisp
+**** Eglot (disabled, see lsp-mode)
+#+begin_src disabled
 
 (use-package eglot
   :ensure t
@@ -672,6 +673,30 @@ Setup lsp so that all the programming languages can have an lsp option for compl
                          (matcher . "CaseSensitive")))))
 #+end_src
 
+**** LSP mode
+
+#+BEGIN_SRC emacs-lisp
+
+(use-package lsp-mode
+  :ensure t
+  :config
+  (lsp-enable-which-key-integration t))
+
+#+END_SRC
+
+:bind (:map lsp-mode-map
+           ("C-c l" . lsp-command-map)
+           ("C-c d" . lsp-describe-thing-at-point
+           ("C-c a" . lsp-execute-code-action))
+
+*** YAML
+
+#+BEGIN_SRC emacs-lisp
+
+(use-package yaml-mode
+  :defer t)
+
+#+END_SRC
 
 ** Programming languages
 *** C / C++
@@ -750,7 +775,7 @@ Update highlighting for modern c++
 LSP settings:
 
 Requires installing gopls (go get golang.org/x/tools/gopls@latest)
-#+begin_src emacs-lisp
+#+begin_src disabled
 
 (add-hook 'go-mode-hook 'eglot-ensure)
 
@@ -764,10 +789,18 @@ Requires installing gopls (go get golang.org/x/tools/gopls@latest)
 
 #+end_src
 
+*** uORB messages
+
+#+begin_src emacs-lisp
+
+(when (file-exists-p "~/.emacs.d/uorb-mode.el")
+  (load-file "~/.emacs.d/uorb-mode.el"))
+
+#+end_src
 
 * Sources
 github MatthewZMD
 - [[https://config.daviwil.com/emacs][David Wilson]]
 - [[https://github.com/MatthewZMD/.emacs.d][MatthewZMD M-EMACS]]
--
+- Brent Westbrook Emacs youtube
 
