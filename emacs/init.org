@@ -671,20 +671,6 @@ Requirement: install plantuml to =~/.local/bin/plantuml.jar=
 
 Setup lsp so that all the programming languages can have an lsp option for completion, etc.
 
-**** Eglot (disabled, see [[lsp-mode]])
-#+begin_src disabled
-
-(use-package eglot
-  :ensure t
-  :defer t
-  :after (company yasnippet))
-
-(setq-default eglot-workspace-configuration
-              '((:gopls .
-                        ((staticcheck . t)
-                         (matcher . "CaseSensitive")))))
-#+end_src
-
 **** LSP mode
 
 Source: [[https://github.com/emacs-lsp/lsp-mode]]
@@ -787,7 +773,7 @@ Update highlighting for modern c++
 
 LSP settings:
 
-Requires installing gopls (go get golang.org/x/tools/gopls@latest)
+Requires installing gopls (go install golang.org/x/tools/gopls@latest)
 
 See instructions at [[https://github.com/golang/tools/blob/master/gopls/doc/emacs.md]]
 
