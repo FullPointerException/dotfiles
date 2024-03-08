@@ -264,7 +264,6 @@ Setup indentation
 ** Packages setup
 
 Setup various package repositories.
-
 #+begin_src emacs-lisp
 
 ;; Setup the package sources
@@ -309,6 +308,45 @@ Load the doom-themes and select the desired theme
 
 #+END_SRC
 
+**** Doom modeline
+Note: run (nerd-icons-install-fonts) once after installing this package
+
+Improved modeline
+
+TODO explore all the options
+
+source: [[https://github.com/seagle0128/doom-modeline]]
+
+#+begin_src emacs-lisp
+
+(use-package doom-modeline
+  :ensure t
+  :hook (after-init . doom-modeline-mode)
+  :config 
+  (setq doom-modeline-height 15
+        doom-modeline-bar-width 8
+        doom-modeline-lsp t
+        doom-modeline-lsp-icon t
+        doom-modeline-irc nil
+        doom-modeline-minor-modes t
+        doom-modeline-vcs-max-length 50
+        doom-modeline-buffer-file-name-style 'truncate-upto-root))
+
+#+end_src
+
+**** Minions
+
+source: [[https://github.com/tarsius/minions]]
+
+Combines minor mode list into a dropdown
+
+#+begin_src emacs-lisp
+
+(use-package minions
+  :ensure t
+  :hook (doom-modeline-mode . minions-mode))
+
+#+end_src
 
 *** Diminish
 
@@ -321,19 +359,6 @@ Diminish allows hiding minor modes from the mode line
 #+END_SRC
 
 *** Completions
-
-**** Ivy 
-
-Use ivy as the completion engine
-Currently disabling ivy in favor of [[Vertico]]
-#+BEGIN_SRC disabled
-
-(use-package ivy
-  :diminish
-  :config
-  (ivy-mode 1))
-
-#+END_SRC
 
 **** Vertico
 
@@ -588,7 +613,6 @@ Pretty-ify the headings font
     (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face))))
 
 #+END_SRC
-
 Pretty-ify the headings asterisks with org bullets package
 
 #+BEGIN_SRC emacs-lisp
@@ -817,7 +841,7 @@ See instructions at [[https://github.com/golang/tools/blob/master/gopls/doc/emac
 
 * Sources
 github MatthewZMD
-- [[https://config.daviwil.com/emacs][David Wilson]]
+- [[https://config.daviwil.com/emacs][David Wilson]] - [[https://github.com/daviwil/dotfiles/blob/master/Emacs.org][github]]
 - [[https://github.com/MatthewZMD/.emacs.d][MatthewZMD M-EMACS]]
 - Brent Westbrook Emacs youtube
 
