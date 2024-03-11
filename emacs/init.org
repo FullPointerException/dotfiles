@@ -722,7 +722,7 @@ Language server support for emacs
                               (setq-local company-backends '(company-elisp))))
          (emacs-lisp-mode . company-mode))
   :config
-  (setq company-idle-delay 1.0
+  (setq company-idle-delay 0.4
         company-minimum-prefix-length 3))
 
 #+END_SRC
