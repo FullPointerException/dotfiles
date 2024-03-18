@@ -218,19 +218,6 @@
 	   (latex . t)
 	   (plantuml . t))))
 
-(with-eval-after-load 'org-faces
-  (dolist
-	  (face '((org-level-1 . 1.75)
-			  (org-level-2 . 1.50)
-			  (org-level-3 . 1.25)
-			  (org-level-4 . 1.10)
-			  (org-level-5 . 1.05)
-			  (org-level-6 . 1.00)
-			  (org-level-7 . 1.00)
-			  (org-level-8 . 1.0)
-			  (org-document-title . 2.0)))
-    (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face))))
-
 (use-package org-bullets
   :after org
   :hook (org-mode . org-bullets-mode)
