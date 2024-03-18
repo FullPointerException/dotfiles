@@ -115,7 +115,6 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
-. "$HOME/.cargo/env"
 
 # Add to path
 export PATH="$PATH:$HOME/.local/bin"
@@ -137,5 +136,5 @@ export PATH="$PATH:$ANDROID_HOME/cmdline-tools/tools/bin"
 export GOPATH="$HOME/go"
 export PATH="$PATH:$GOPATH/bin"
 
-source /home/josh/repos/site/alacritty/extra/completions/alacritty.bash
-
+# Setup ripgrep
+export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
