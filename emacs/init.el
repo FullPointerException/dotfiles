@@ -46,20 +46,6 @@
 
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
-(set-face-attribute 'default nil
-                    :font "Fira Code Retina"
-                    :height 80)
-
-(set-face-attribute 'fixed-pitch nil
-                    :font "Fira Code Retina"
-                    :height 80
-                    :weight 'light)
-
-(set-face-attribute 'variable-pitch nil
-                    :font "Cantarell"
-                    :height 80
-                    :weight 'light)
-
 (column-number-mode) ; Enable column numbers in mode bar
 
 ;; Enable line numbers for some modes
