@@ -737,12 +737,23 @@ Language server support for emacs
 #+END_SRC
 
 ** Programming languages
+*** CMake
+
+TODO: Make this a shell block
+Install the language server using pip install cmake-language-server
+
+#+BEGIN_SRC emacs-lisp
+
+(add-hook 'cmake-mode-hook #'lsp-deferred)
+
+#+END_SRC
+
 *** C / C++
 
 Swap header / source
 TODO: Currently this is getting overwritten, but just use C-c p a
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
 
 (add-hook 'c-mode-common-hook
           (lambda()
