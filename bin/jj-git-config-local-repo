@@ -1,0 +1,4 @@
+#!/bin/bash
+
+git config --local user.name "Full Pointer Exception"
+git config --local user.email "fullpointerxception@gmail.com"

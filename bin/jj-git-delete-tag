@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if [[ $# -ne 1 ]]
+then
+    echo "Usage: jj-git-delete-tag <tagname>"
+fi
+
+tagname=$1
+git tag -d ${tagname}
+git push --delete origin ${tagname}
+
