@@ -1,0 +1,140 @@
+'$schema' = 'https://starship.rs/config-schema.json'
+
+# Generic stuff
+add_newline = true
+palette = 'catppuccin_mocha'
+
+# Environment
+[cmd_duration]
+min_time = 1000
+show_milliseconds = false
+format = '[$duration]($style)'
+
+[directory]
+read_only = '󰌾'
+truncation_length = 10
+truncate_to_repo = true
+truncation_symbol = '…/'
+home_symbol=''
+
+[directory.substitutions]
+'Documents' = '󰈙'
+'Downloads' = ''
+'Music' = ''
+'Pictures' = ''
+
+[docker_context]
+symbol = ''
+
+[hostname]
+disabled = false
+ssh_only = false
+format = '[$ssh_symbol$hostname]($style)➜'
+
+[line_break]
+disabled=false
+
+[os.symbols]
+Ubuntu = ' '
+
+[time]
+disabled = false
+format = '[🕙$time]($style)'
+
+[username]
+show_always = true
+format = '[$user@](green)'
+
+[vagrant]
+disabled = true
+
+# Git
+[git_branch]
+format = '[\[$symbol$branch(:$remote_branch)]($style)'
+symbol = ''
+always_show_remote = false
+style = 'bold mauve'
+
+[git_commit]
+format = '[ $hash( $tag)]($style)'
+tag_disabled = false
+only_detached = false
+tag_symbol = ''
+style = 'bold mauve'
+
+[git_metrics]
+disabled = false
+format = '( [+$added]($added_style) )([-$deleted]($deleted_style))'
+
+[git_state]
+format = '[ $state( $progress_current/$progress_total)]($style)'
+style = 'bold mauve'
+
+[git_status]
+style = 'bold mauve'
+format = '( [$ahead_behind$staged$modified$untracked$renamed$deleted$conflicted$stashed]($style))[\]]($style)'
+conflicted = '[󰦎](italic bright-magenta)'
+ahead = '[⇡[${count}](bold white)](italic green)'
+behind = '[⇣[${count}](bold white)](italic red)'
+diverged = '[⇕ ⇡[${ahead_count}](regular white)⇣[${behind_count}](regular white)](italic bright-magenta)'
+untracked = '[?$count](italic bright-yellow)'
+stashed = '[󰪶$count](italic white)'
+modified = '[!$count](italic yellow)'
+staged = '[+[$count](bold white)](italic bright-cyan)'
+renamed = '[»](italic bright-blue)'
+deleted = '[✘$count](italic red)'
+up_to_date = '[](italic green)'
+
+# Colors
+[palettes.catppuccin_mocha]
+rosewater = '#f5e0dc'
+flamingo = '#f2cdcd'
+pink = '#f5c2e7'
+mauve = '#cba6f7'
+red = '#f38ba8'
+maroon = '#eba0ac'
+peach = '#fab387'
+yellow = '#f9e2af'
+green = '#a6e3a1'
+teal = '#94e2d5'
+sky = '#89dceb'
+sapphire = '#74c7ec'
+blue = '#89b4fa'
+lavender = '#b4befe'
+text = '#cdd6f4'
+subtext1 = '#bac2de'
+subtext0 = '#a6adc8'
+overlay2 = '#9399b2'
+overlay1 = '#7f849c'
+overlay0 = '#6c7086'
+surface2 = '#585b70'
+surface1 = '#45475a'
+surface0 = '#313244'
+base = '#1e1e2e'
+mantle = '#181825'
+crust = '#11111b'
+
+# Language
+[c]
+format = '[$symbol]($style)'
+symbol = '  '
+
+[cmake]
+disabled = true
+
+[lua]
+format = '[$symbol]($style)'
+symbol = ' 󰢱 '
+
+[golang]
+format = '[$symbol]($style)'
+symbol = ''
+
+[python]
+format = '[$symbol]($style)'
+
+[zig]
+format = '[\[$symbol($version)\]]($style)'
+symbol = '󱐋'
+version_format = '${raw}'
+style = 'italic peach'
