@@ -3,15 +3,16 @@
 # Generic stuff
 add_newline = true
 palette = 'catppuccin_mocha'
+command_timeout = 999999999
 
 # Environment
 [cmd_duration]
 min_time = 1000
 show_milliseconds = false
-format = '[$duration]($style)'
+format = ' [$duration]($style)'
 
 [directory]
-read_only = '󰌾'
+read_only = ' 󰌾'
 truncation_length = 10
 truncate_to_repo = true
 truncation_symbol = '…/'
