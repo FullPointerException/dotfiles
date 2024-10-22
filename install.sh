@@ -6,5 +6,5 @@ cp ./bin/* $HOME/.local/bin
 
 echo "Setting up starship"
 mkdir -p $HOME/.config/starship
-cp ./starship/starship/starship.toml $HOME/.config/starship/starship.toml
+cp ./starship/starship.toml $HOME/.config/starship/starship.toml
 
