@@ -1,0 +1,18 @@
+* Bin
+
+  Personal shell scripts to run
+
+** Why jj-*?
+
+  The jj is just something easy to prefix with my scripts to keep them separate and also easy to find
+
+** Scripts
+
+*** jj-git-config-local-repo
+
+    Sets the user name and email for a new git repo
+
+*** jj-git-delete-tag
+
+  Removes a tag both locally and from the remote
+
