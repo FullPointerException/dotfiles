@@ -1,8 +1,12 @@
 #! /bin/bash
+set -euo pipefail
 
-echo "Setting up $HOME/.local/bin"
-mkdir -p "$HOME/.local/bin"
-cp ./bin/* "$HOME/.local/bin"
+SOURCE_BIN_DIR="./bin"
+TARGET_BIN_DIR="$HOME/.local/bin"
+
+echo "Setting up ${TARGET_BIN_DIR}"
+mkdir -p "${TARGET_BIN_DIR}"
+cp "${SOURCE_BIN_DIR}/*" "${TARGET_BIN_DIR}"
 
 echo "Setting up starship"
 mkdir -p "$HOME/.config/starship"
